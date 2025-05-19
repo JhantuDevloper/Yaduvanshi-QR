@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>View Image</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    img {
+      max-width: 100vw;
+      max-height: 100vh;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.3);
+    }
+  </style>
+</head>
+<body>
+  <img id="photo" src="" alt="Loading..."/>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const imgURL = urlParams.get('img');
+    if (imgURL) {
+      document.getElementById('photo').src = imgURL;
+    } else {
+      document.body.innerHTML = '<h2 style="color:white;">No image found.</h2>';
+    }
+  </script>
+</body>
+</html>

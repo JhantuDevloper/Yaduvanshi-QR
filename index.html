@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Yaduvanshi QR</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<header>
+    <div class="logo">Yaduvanshi</div>
+    <div class="nav-buttons">
+      <a href="guide.html"><button href="guide.html">Guide</button></a>
+      <a href="about.html">  <button >About</button></a>
+       <a href="creator.html">  <button href="" >Creator</button></a>
+    
+      
+      
+    </div>
+  </header>
+
+  <h1>Upload Photo & Get QR Code</h1>
+  <input type="file" accept="image/*" id="fileInput" />
+  <div class="loader" id="loader"></div>
+  <div id="preview"></div>
+  <div id="link"></div>
+  <div id="qr"></div>
+
+  <footer>
+    <span>🔋 Powered by <strong>Ryden</strong></span>
+    <span>🛠️ Made by <strong>Jhantu Muriary</strong></span>
+    <span>🎨 Design by <strong>Ryden</strong></span>
+    <span>💡 Idea by <strong>Sourav</strong></span>
+  </footer>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
+    const qrDiv = document.getElementById('qr');
+    const linkDiv = document.getElementById('link');
+    const loader = document.getElementById('loader');
+
+    fileInput.addEventListener('change', function () {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      loader.style.display = 'block';
+
+      reader.onloadend = function () {
+        const base64Image = reader.result.split(',')[1];
+
+        fetch("https://api.imgbb.com/1/upload", {
+          method: "POST",
+          body: new URLSearchParams({
+            key: "2a83272fcc76a556d9d76051bfc08e3c",
+            image: base64Image
+          }),
+        })
+        .then(res => res.json())
+        .then(data => {
+          loader.style.display = 'none';
+          const imgURL = data.data.url;
+
+          preview.innerHTML = `<img src="${imgURL}" alt="Uploaded Image" />`;
+          linkDiv.innerHTML = `<a href="${imgURL}" target="_blank">${imgURL}</a>`;
+
+          const finalURL = `https://yourwebsite.com/view.html?img=${encodeURIComponent(imgURL)}`;
+          qrDiv.innerHTML = '';
+          new QRCode(qrDiv, {
+            text: finalURL,
+            width: 180,
+            height: 180
+          });
+        })
+        .catch(err => {
+          loader.style.display = 'none';
+          alert("Upload failed. Please try again or check your API key.");
+          console.error(err);
+        });
+      };
+
+      reader.readAsDataURL(file);
+    });
+  </script>
+</body>
+</html>
